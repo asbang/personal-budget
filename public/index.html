@@ -20,31 +20,29 @@
     <link rel="stylesheet" href="reset.css" />
     <link rel="stylesheet" href="main.css" />
     <style>
-
       h3 {
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
         width: 960px;
         height: 500px;
         position: relative;
       }
-      
+
       svg {
         width: 100%;
         height: 100%;
       }
-      
-      path.slice{
-        stroke-width:2px;
+
+      path.slice {
+        stroke-width: 2px;
       }
-      
-      polyline{
-        opacity: .3;
+
+      polyline {
+        opacity: 0.3;
         stroke: black;
         stroke-width: 2px;
         fill: none;
       }
-      
-      </style>
+    </style>
   </head>
   <body>
     <!--This is an A11y change-->
@@ -177,22 +175,13 @@
         datasets: [
           {
             data: [],
-            backgroundColor: [
-              "#ffcd56",
-              "#ff6384",
-              "#36a2eb",
-              "#fd6b19",
-              "#7ae7c7",
-              "#c589e8",
-              "#7c3238",
-              "#8d99ae",
-            ],
+            backgroundColor: [],
           },
         ],
         labels: [],
       };
 
-      function createChart() {
+      function createChart(dataSource) {
         var ctx = document.getElementById("myChart").getContext("2d");
         var myPieChart = new Chart(ctx, {
           type: "pie",
@@ -201,13 +190,13 @@
       }
 
       function getBudget() {
-        axios.get("http://localhost:3000/budget").then(function (res) {
+        axios.get("http://localhost:3000/api/budget-data").then(function (res) {
           console.log(res);
-          change(randomData(res.data.myBudget));
-          for (var i = 0; i < res.data.myBudget.length; i++) {
-            dataSource.datasets[0].data[i] = res.data.myBudget[i].budget;
-            dataSource.labels[i] = res.data.myBudget[i].title;
-            createChart();
+          change(randomData(res.data));
+          for (var i = 0; i < res.data.length; i++) {
+            dataSource.datasets[0].data[i] = res.data.budget;
+            dataSource.labels[i] = res.data.title;
+            createChart(res.data);
           }
         });
       }
@@ -271,15 +260,13 @@
           "#d0743c",
           "#ff8c00",
         ]);
+
       function randomData(budgetData) {
-     
-        console.log(budgetData);
-        // var labels = Object.entries(budgetData);
         return budgetData.map(function (data) {
-        return { label: data.title, value: data.budget };
+          return { label: data.title, value: data.budget };
         });
       }
-      
+
       function change(data) {
         /* ------- PIE SLICES -------*/
         var slice = svg
